@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>鲜食记 - 智能冰箱食材管理</title>
+<!-- 资源引用 -->
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/echarts.min.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #F5F5F7;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .page-transition {
+            transition: opacity 0.2s ease-in-out;
+        }
+        .active-tab {
+            color: #F97316;
+        }
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+<!-- 移动端容器 -->
+<div class="relative w-[375px] h-[812px] bg-white shadow-2xl rounded-[3rem] overflow-hidden border-[8px] border-gray-900">
+<!-- 状态栏模拟 -->
+<div class="absolute top-0 w-full h-8 flex justify-between items-center px-8 z-50 text-xs font-medium">
+<span>9:41</span>
+<div class="flex gap-1">
+<iconify-icon icon="ion:cellular"></iconify-icon>
+<iconify-icon icon="ion:wifi"></iconify-icon>
+<iconify-icon icon="ion:battery-full"></iconify-icon>
+</div>
+</div>
+<!-- 页面容器 -->
+<div class="h-full pt-8 pb-20 overflow-y-auto hide-scrollbar" id="app-content">
+<!-- 1. 首页/冰箱概览页 -->
+<section class="page-transition" id="page-home">
+<div class="px-5 py-4">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-orange-100" src="/agent-py/static/source/images/placeholder.svg"/>
+<div>
+<h1 class="text-lg font-bold text-gray-800">鲜食记</h1>
+<p class="text-xs text-gray-500">让每一口都新鲜</p>
+</div>
+</div>
+<button class="relative p-2 bg-gray-100 rounded-full">
+<iconify-icon class="text-xl text-gray-600" icon="heroicons:bell"></iconify-icon>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+</button>
+</div>
+<!-- 搜索栏 -->
+<div class="relative mb-6">
+<iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" icon="heroicons:magnifying-glass"></iconify-icon>
+<input class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500" placeholder="搜索冰箱内的食材..." type="text"/>
+</div>
+<!-- 分类标签 -->
+<div class="flex gap-3 overflow-x-auto hide-scrollbar mb-6">
+<button class="px-4 py-1.5 bg-orange-500 text-white rounded-full text-sm font-medium whitespace-nowrap">全部</button>
+<button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">蔬菜</button>
+<button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">水果</button>
+<button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">肉类</button>
+<button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">海鲜</button>
+<button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">蛋奶</button>
+</div>
+<!-- 食材网格 -->
+<div class="grid grid-cols-2 gap-4">
+<!-- 食材卡片 1 -->
+<div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onclick="switchPage('food-detail')">
+<div class="relative mb-3">
+<img alt="Tomato" class="w-full h-24 object-cover rounded-xl" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/bf00a2beeda44fb9827f2273e42a804d.jpg"/>
+<span class="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-[10px] rounded-full">新鲜</span>
+</div>
+<h3 class="font-semibold text-gray-800">有机西红柿</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-xs text-gray-500">500g</span>
+<span class="text-xs font-medium text-green-600">剩 5 天</span>
+</div>
+</div>
+<!-- 食材卡片 2 -->
+<div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+<div class="relative mb-3">
+<img alt="Beef" class="w-full h-24 object-cover rounded-xl" src="/agent-py/static/source/images/placeholder.svg"/>
+<span class="absolute top-2 right-2 px-2 py-0.5 bg-yellow-500 text-white text-[10px] rounded-full">临期</span>
+</div>
+<h3 class="font-semibold text-gray-800">澳洲和牛</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-xs text-gray-500">250g</span>
+<span class="text-xs font-medium text-yellow-600">剩 1 天</span>
+</div>
+</div>
+<!-- 食材卡片 3 -->
+<div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+<div class="relative mb-3">
+<img alt="Milk" class="w-full h-24 object-cover rounded-xl" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/167a037f39c84f348edcaf76b52663e7.jpg"/>
+<span class="absolute top-2 right-2 px-2 py-0.5 bg-red-500 text-white text-[10px] rounded-full">过期</span>
+</div>
+<h3 class="font-semibold text-gray-800">全脂鲜牛奶</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-xs text-gray-500">1L</span>
+<span class="text-xs font-medium text-red-600">已过期</span>
+</div>
+</div>
+<!-- 食材卡片 4 -->
+<div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+<div class="relative mb-3">
+<img alt="Broccoli" class="w-full h-24 object-cover rounded-xl" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/aa81a155493d41fca6c9242283868b49.jpg"/>
+<span class="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-[10px] rounded-full">新鲜</span>
+</div>
+<h3 class="font-semibold text-gray-800">西兰花</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-xs text-gray-500">1颗</span>
+<span class="text-xs font-medium text-green-600">剩 3 天</span>
+</div>
+</div>
+<!-- 更多食材... -->
+</div>
+<!-- 悬浮添加按钮 -->
+<button class="fixed bottom-24 right-8 w-14 h-14 bg-orange-500 text-white rounded-full shadow-lg flex items-center justify-center transform active:scale-90 transition-transform z-40" onclick="switchPage('add-food')">
+<iconify-icon class="text-3xl" icon="heroicons:plus-solid"></iconify-icon>
+</button>
+</div>
+</section>
+<!-- 2. 食材录入页 -->
+<section class="hidden page-transition" id="page-add-food">
+<div class="px-5 py-4">
+<div class="flex items-center gap-4 mb-8">
+<button class="p-2 bg-gray-100 rounded-full" onclick="switchPage('home')">
+<iconify-icon class="text-xl" icon="heroicons:chevron-left"></iconify-icon>
+</button>
+<h2 class="text-xl font-bold">添加食材</h2>
+</div>
+<!-- 录入方式 -->
+<div class="grid grid-cols-3 gap-3 mb-8">
+<button class="flex flex-col items-center gap-2 p-4 bg-orange-50 rounded-2xl">
+<iconify-icon class="text-2xl text-orange-600" icon="heroicons:pencil-square"></iconify-icon>
+<span class="text-xs font-medium text-orange-800">手动输入</span>
+</button>
+<button class="flex flex-col items-center gap-2 p-4 bg-green-50 rounded-2xl">
+<iconify-icon class="text-2xl text-green-600" icon="heroicons:qr-code"></iconify-icon>
+<span class="text-xs font-medium text-green-800">扫码录入</span>
+</button>
+<button class="flex flex-col items-center gap-2 p-4 bg-blue-50 rounded-2xl">
+<iconify-icon class="text-2xl text-blue-600" icon="heroicons:camera"></iconify-icon>
+<span class="text-xs font-medium text-blue-800">拍照识别</span>
+</button>
+</div>
+<!-- 表单 -->
+<div class="space-y-5">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1.5">食材名称</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" placeholder="例如：五花肉" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1.5">分类</label>
+<select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none">
+<option>肉类</option>
+<option>蔬菜</option>
+<option>水果</option>
+<option>蛋奶</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1.5">数量/单位</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder="500g" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1.5">保质期至</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none" type="date" value="2024-05-20"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1.5">存放位置</label>
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 bg-orange-500 text-white rounded-xl text-sm font-medium">冷藏</button>
+<button class="flex-1 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium">冷冻</button>
+<button class="flex-1 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium">常温</button>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-4 bg-orange-500 text-white rounded-2xl font-bold shadow-lg shadow-orange-200 active:scale-[0.98] transition-transform" onclick="switchPage('home')">
+                        保存食材
+                    </button>
+</div>
+</section>
+<!-- 3. 食材详情页 -->
+<section class="hidden page-transition" id="page-food-detail">
+<div class="relative">
+<img alt="Food Detail" class="w-full h-64 object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/895d9cbe3f0748f2906b92e4f222dfc2.jpg"/>
+<button class="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-md" onclick="switchPage('home')">
+<iconify-icon class="text-xl" icon="heroicons:chevron-left"></iconify-icon>
+</button>
+</div>
+<div class="px-5 py-6 bg-white -mt-6 rounded-t-3xl relative z-10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="text-2xl font-bold text-gray-900">有机西红柿</h2>
+<span class="inline-block mt-2 px-3 py-1 bg-green-50 text-green-600 text-xs font-semibold rounded-full">新鲜 · 蔬菜类</span>
+</div>
+<div class="text-right">
+<span class="block text-2xl font-bold text-orange-500">500g</span>
+<span class="text-xs text-gray-400">当前剩余</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-6">
+<div class="p-3 bg-gray-50 rounded-2xl">
+<span class="block text-xs text-gray-400 mb-1">购入日期</span>
+<span class="font-medium text-gray-700">2024-05-10</span>
+</div>
+<div class="p-3 bg-gray-50 rounded-2xl">
+<span class="block text-xs text-gray-400 mb-1">保质期至</span>
+<span class="font-medium text-gray-700">2024-05-20</span>
+</div>
+</div>
+<div class="mb-8">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-medium text-gray-700">新鲜度</span>
+<span class="text-sm font-medium text-green-600">85% - 状态极佳</span>
+</div>
+<div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<h3 class="font-bold text-gray-800 mb-4">推荐菜谱</h3>
+<div class="space-y-3 mb-8">
+<div class="flex gap-3 p-2 border border-gray-100 rounded-xl cursor-pointer" onclick="switchPage('recipe-detail')">
+<img alt="Recipe" class="w-16 h-16 rounded-lg object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg"/>
+<div class="flex-1">
+<h4 class="text-sm font-bold">经典西红柿炒鸡蛋</h4>
+<p class="text-[10px] text-gray-400 mt-1">食材匹配度 100% · 10分钟</p>
+</div>
+<iconify-icon class="self-center text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</div>
+<div class="flex gap-3 p-2 border border-gray-100 rounded-xl">
+<img alt="Recipe" class="w-16 h-16 rounded-lg object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg"/>
+<div class="flex-1">
+<h4 class="text-sm font-bold">番茄肥牛汤</h4>
+<p class="text-[10px] text-gray-400 mt-1">食材匹配度 80% · 25分钟</p>
+</div>
+<iconify-icon class="self-center text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 py-4 border border-gray-200 text-gray-600 rounded-2xl font-bold">编辑</button>
+<button class="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-bold">加入清单</button>
+</div>
+</div>
+</section>
+<!-- 4. 菜谱推荐页 -->
+<section class="hidden page-transition" id="page-recipes">
+<div class="px-5 py-4">
+<h2 class="text-2xl font-bold text-gray-900 mb-2">今日推荐</h2>
+<p class="text-sm text-gray-500 mb-6">冰箱有 <span class="text-orange-500 font-bold">12</span> 种食材，为您智能匹配：</p>
+<div class="space-y-6">
+<!-- 菜谱卡片 1 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100" onclick="switchPage('recipe-detail')">
+<div class="relative h-48">
+<img alt="Recipe" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg"/>
+<div class="absolute top-4 left-4 px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
+                                    98% 匹配
+                                </div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold text-gray-800">清蒸鲈鱼</h3>
+<div class="flex items-center gap-1 text-orange-500">
+<iconify-icon icon="heroicons:star-solid"></iconify-icon>
+<span class="text-sm font-bold">4.9</span>
+</div>
+</div>
+<div class="flex gap-4 text-xs text-gray-400 mb-4">
+<span class="flex items-center gap-1"><iconify-icon icon="heroicons:clock"></iconify-icon> 20分钟</span>
+<span class="flex items-center gap-1"><iconify-icon icon="heroicons:fire"></iconify-icon> 中等难度</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] rounded-md font-medium">已有 鲈鱼✓</span>
+<span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] rounded-md font-medium">已有 生姜✓</span>
+<span class="px-2 py-1 bg-gray-50 text-gray-400 text-[10px] rounded-md font-medium">缺少 蒸鱼豉油</span>
+</div>
+</div>
+</div>
+<!-- 菜谱卡片 2 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+<div class="relative h-48">
+<img alt="Recipe" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg"/>
+<div class="absolute top-4 left-4 px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
+                                    85% 匹配
+                                </div>
+</div>
+<div class="p-5">
+<h3 class="text-lg font-bold text-gray-800 mb-2">蒜蓉西兰花</h3>
+<div class="flex gap-4 text-xs text-gray-400 mb-4">
+<span class="flex items-center gap-1"><iconify-icon icon="heroicons:clock"></iconify-icon> 10分钟</span>
+<span class="flex items-center gap-1"><iconify-icon icon="heroicons:fire"></iconify-icon> 简单</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] rounded-md font-medium">已有 西兰花✓</span>
+<span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] rounded-md font-medium">已有 大蒜✓</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. 菜谱详情页 -->
+<section class="hidden page-transition" id="page-recipe-detail">
+<div class="relative">
+<img alt="Recipe Hero" class="w-full h-72 object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<button class="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-md" onclick="switchPage('recipes')">
+<iconify-icon class="text-xl" icon="heroicons:chevron-left"></iconify-icon>
+</button>
+<button class="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-md">
+<iconify-icon class="text-xl text-gray-600" icon="heroicons:heart"></iconify-icon>
+</button>
+</div>
+<div class="px-5 py-6 bg-white -mt-8 rounded-t-[2.5rem] relative z-10">
+<h2 class="text-2xl font-bold text-gray-900 mb-2">经典西红柿炒鸡蛋</h2>
+<div class="flex items-center gap-4 mb-6">
+<div class="flex items-center gap-1 text-orange-500">
+<iconify-icon icon="heroicons:star-solid"></iconify-icon>
+<span class="text-sm font-bold">4.8</span>
+</div>
+<span class="text-gray-300">|</span>
+<span class="text-sm text-gray-500">1512 人做过</span>
+</div>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="text-center p-3 bg-orange-50 rounded-2xl">
+<span class="block text-lg font-bold text-orange-600">15</span>
+<span class="text-[10px] text-orange-400">分钟</span>
+</div>
+<div class="text-center p-3 bg-green-50 rounded-2xl">
+<span class="block text-lg font-bold text-green-600">简单</span>
+<span class="text-[10px] text-green-400">难度</span>
+</div>
+<div class="text-center p-3 bg-blue-50 rounded-2xl">
+<span class="block text-lg font-bold text-blue-600">320</span>
+<span class="text-[10px] text-blue-400">千卡</span>
+</div>
+</div>
+<div class="mb-8">
+<h3 class="font-bold text-gray-800 mb-4 flex justify-between items-center">
+                            食材清单
+                            <span class="text-xs font-normal text-gray-400">2人份</span>
+</h3>
+<ul class="space-y-4">
+<li class="flex justify-between items-center pb-3 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="text-sm text-gray-700">西红柿</span>
+</div>
+<span class="text-sm text-gray-400">2个 (已有✓)</span>
+</li>
+<li class="flex justify-between items-center pb-3 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="text-sm text-gray-700">鸡蛋</span>
+</div>
+<span class="text-sm text-gray-400">3枚 (已有✓)</span>
+</li>
+<li class="flex justify-between items-center pb-3 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 bg-gray-300 rounded-full"></span>
+<span class="text-sm text-gray-700">小葱</span>
+</div>
+<span class="text-sm text-orange-500 font-medium">需采购</span>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-gray-800 mb-4">烹饪步骤</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<span class="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 text-xs font-bold rounded-full flex items-center justify-center">1</span>
+<p class="text-sm text-gray-600 leading-relaxed">西红柿洗净切块，鸡蛋打入碗中加少许盐搅拌均匀。</p>
+</div>
+<div class="flex gap-4">
+<span class="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 text-xs font-bold rounded-full flex items-center justify-center">2</span>
+<p class="text-sm text-gray-600 leading-relaxed">热锅凉油，倒入蛋液炒至凝固后盛出备用。</p>
+</div>
+</div>
+</div>
+<div class="mt-10 flex gap-4">
+<button class="flex-1 py-4 bg-orange-100 text-orange-600 rounded-2xl font-bold">加入购物清单</button>
+<button class="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-bold shadow-lg shadow-orange-200">开始烹饪</button>
+</div>
+</div>
+</section>
+<!-- 6. 健康管理页 -->
+<section class="hidden page-transition" id="page-health">
+<div class="px-5 py-4">
+<h2 class="text-2xl font-bold text-gray-900 mb-6">健康周报</h2>
+<!-- 营养摄入概览 -->
+<div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-6">
+<h3 class="font-bold text-gray-800 mb-4">本周营养摄入</h3>
+<div class="w-full h-48" id="nutrition-chart"></div>
+<div class="grid grid-cols-3 gap-2 mt-4">
+<div class="text-center">
+<span class="block text-xs text-gray-400">蛋白质</span>
+<span class="text-sm font-bold text-blue-500">65%</span>
+</div>
+<div class="text-center border-x border-gray-100">
+<span class="block text-xs text-gray-400">碳水</span>
+<span class="text-sm font-bold text-orange-500">42%</span>
+</div>
+<div class="text-center">
+<span class="block text-xs text-gray-400">脂肪</span>
+<span class="text-sm font-bold text-green-500">28%</span>
+</div>
+</div>
+</div>
+<!-- 食材消耗 -->
+<div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-6">
+<h3 class="font-bold text-gray-800 mb-4">食材消耗统计</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-xl" icon="noto:poultry-leg"></iconify-icon>
+</div>
+<span class="text-sm font-medium">肉类消耗</span>
+</div>
+<span class="text-sm font-bold">1.2 kg</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+<iconify-icon class="text-xl" icon="noto:leafy-green"></iconify-icon>
+</div>
+<span class="text-sm font-medium">蔬菜消耗</span>
+</div>
+<span class="text-sm font-bold">3.5 kg</span>
+</div>
+</div>
+</div>
+<!-- 建议卡片 -->
+<div class="bg-gradient-to-br from-orange-400 to-orange-600 p-5 rounded-3xl text-white mb-6">
+<div class="flex items-center gap-2 mb-2">
+<iconify-icon class="text-xl" icon="heroicons:light-bulb"></iconify-icon>
+<h3 class="font-bold">饮食建议</h3>
+</div>
+<p class="text-sm opacity-90 leading-relaxed">基于您冰箱里的西兰花和三文鱼，建议今晚制作一份“香煎三文鱼配西兰花”，不仅能及时消耗临期食材，还能补充优质 Omega-3。</p>
+</div>
+<!-- 浪费预警 -->
+<div class="bg-red-50 p-5 rounded-3xl border border-red-100">
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-bold text-red-800">浪费预警</h3>
+<span class="px-2 py-1 bg-red-500 text-white text-[10px] rounded-full">高风险</span>
+</div>
+<p class="text-xs text-red-600 mb-4">以下食材将在 24 小时内过期，请尽快处理：</p>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<img alt="Beef" class="w-12 h-12 rounded-lg object-cover border-2 border-red-200" src="/agent-py/static/source/images/placeholder.svg"/>
+<span class="text-[10px] text-red-700 mt-1">澳洲和牛</span>
+</div>
+<div class="flex flex-col items-center">
+<img alt="Milk" class="w-12 h-12 rounded-lg object-cover border-2 border-red-200" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/167a037f39c84f348edcaf76b52663e7.jpg"/>
+<span class="text-[10px] text-red-700 mt-1">鲜牛奶</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. 个人中心页 -->
+<section class="hidden page-transition" id="page-profile">
+<div class="px-5 py-4">
+<div class="flex flex-col items-center mt-6 mb-8">
+<div class="relative">
+<img alt="Avatar" class="w-24 h-24 rounded-full border-4 border-white shadow-lg" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/e96cf79685f6430eb9230062d5f3bbaf.jpg"/>
+<button class="absolute bottom-0 right-0 w-8 h-8 bg-orange-500 text-white rounded-full border-2 border-white flex items-center justify-center">
+<iconify-icon class="text-sm" icon="heroicons:camera-solid"></iconify-icon>
+</button>
+</div>
+<h2 class="text-xl font-bold text-gray-900 mt-4">美食探险家 · 张小厨</h2>
+<p class="text-sm text-gray-400 mt-1">Lv.5 资深管理达人</p>
+</div>
+<!-- 统计数据 -->
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="text-center">
+<span class="block text-lg font-bold text-gray-800">42</span>
+<span class="text-[10px] text-gray-400">已记录食材</span>
+</div>
+<div class="text-center border-x border-gray-100">
+<span class="block text-lg font-bold text-gray-800">156</span>
+<span class="text-[10px] text-gray-400">已生成菜谱</span>
+</div>
+<div class="text-center">
+<span class="block text-lg font-bold text-gray-800">2.5kg</span>
+<span class="text-[10px] text-gray-400">累计节约</span>
+</div>
+</div>
+<!-- 功能列表 -->
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-red-400" icon="heroicons:heart"></iconify-icon>
+<span class="text-sm font-medium">我的收藏</span>
+</div>
+<iconify-icon class="text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</button>
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-orange-400" icon="heroicons:shopping-bag"></iconify-icon>
+<span class="text-sm font-medium">购物清单</span>
+</div>
+<span class="px-2 py-0.5 bg-orange-100 text-orange-600 text-[10px] rounded-full">3件待买</span>
+</button>
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-yellow-500" icon="heroicons:bell-alert"></iconify-icon>
+<span class="text-sm font-medium">食材预警设置</span>
+</div>
+<iconify-icon class="text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</button>
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-blue-400" icon="heroicons:user-group"></iconify-icon>
+<span class="text-sm font-medium">家庭共享中心</span>
+</div>
+<iconify-icon class="text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</button>
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 border-b border-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-purple-400" icon="heroicons:sparkles"></iconify-icon>
+<span class="text-sm font-medium">饮食习惯偏好</span>
+</div>
+<iconify-icon class="text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</button>
+<button class="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-xl text-gray-400" icon="heroicons:information-circle"></iconify-icon>
+<span class="text-sm font-medium">关于鲜食记</span>
+</div>
+<iconify-icon class="text-gray-300" icon="heroicons:chevron-right"></iconify-icon>
+</button>
+</div>
+<button class="w-full py-4 text-red-500 font-bold bg-white rounded-2xl border border-red-100 shadow-sm active:scale-[0.98] transition-transform">
+                        退出登录
+                    </button>
+</div>
+</section>
+</div>
+<!-- 底部导航栏 -->
+<nav class="absolute bottom-0 w-full bg-white/80 backdrop-blur-xl border-t border-gray-100 px-6 py-3 flex justify-between items-center safe-area-bottom z-50" id="bottom-nav">
+<button class="flex flex-col items-center gap-1 active-tab" id="nav-home" onclick="switchPage('home')">
+<iconify-icon class="text-2xl" icon="heroicons:home-solid"></iconify-icon>
+<span class="text-[10px] font-bold">首页</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400" id="nav-recipes" onclick="switchPage('recipes')">
+<iconify-icon class="text-2xl" icon="heroicons:book-open"></iconify-icon>
+<span class="text-[10px] font-medium">菜谱</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400" id="nav-health" onclick="switchPage('health')">
+<iconify-icon class="text-2xl" icon="heroicons:chart-bar"></iconify-icon>
+<span class="text-[10px] font-medium">健康</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400" id="nav-profile" onclick="switchPage('profile')">
+<iconify-icon class="text-2xl" icon="heroicons:user"></iconify-icon>
+<span class="text-[10px] font-medium">我的</span>
+</button>
+</nav>
+</div>
+<script>
+        // 页面切换逻辑
+        function switchPage(pageId) {
+            const pages = [
+                'page-home', 'page-add-food', 'page-food-detail', 
+                'page-recipes', 'page-recipe-detail', 'page-health', 'page-profile'
+            ];
+            
+            pages.forEach(id => {
+                const element = document.getElementById(id);
+                if (id === 'page-' + pageId) {
+                    element.classList.remove('hidden');
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                    }, 50);
+                } else {
+                    element.classList.add('hidden');
+                }
+            });
+
+            // 更新底部导航状态
+            const navIds = ['home', 'recipes', 'health', 'profile'];
+            navIds.forEach(id => {
+                const navBtn = document.getElementById('nav-' + id);
+                if (id === pageId) {
+                    navBtn.classList.add('active-tab');
+                    navBtn.classList.remove('text-gray-400');
+                    navBtn.querySelector('span').classList.add('font-bold');
+                    navBtn.querySelector('span').classList.remove('font-medium');
+                } else {
+                    navBtn.classList.remove('active-tab');
+                    navBtn.classList.add('text-gray-400');
+                    navBtn.querySelector('span').classList.remove('font-bold');
+                    navBtn.querySelector('span').classList.add('font-medium');
+                }
+            });
+
+            // 如果是健康页，初始化图表
+            if (pageId === 'health') {
+                setTimeout(initChart, 100);
+            }
+
+            // 滚动回到顶部
+            document.getElementById('app-content').scrollTo(0, 0);
+        }
+
+        // 初始化 ECharts
+        function initChart() {
+            const chartDom = document.getElementById('nutrition-chart');
+            if (!chartDom) return;
+            const myChart = echarts.init(chartDom);
+            const option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    bottom: '0%',
+                    left: 'center',
+                    icon: 'circle',
+                    itemWidth: 8,
+                    textStyle: { fontSize: 10 }
+                },
+                series: [
+                    {
+                        name: '营养成分',
+                        type: 'pie',
+                        radius: ['50%', '80%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 14,
+                                fontWeight: 'bold'
+                            }
+                        },
+                        data: [
+                            { value: 65, name: '蛋白质', itemStyle: { color: '#3B82F6' } },
+                            { value: 42, name: '碳水', itemStyle: { color: '#F97316' } },
+                            { value: 28, name: '脂肪', itemStyle: { color: '#22C55E' } },
+                            { value: 15, name: '纤维素', itemStyle: { color: '#A855F7' } }
+                        ]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        }
+
+        // 默认显示首页
+        window.onload = () => {
+            switchPage('home');
+        };
+    </script>
+</body>
+</html>
