@@ -17,10 +17,10 @@
           :src="recipeImage"
           mode="aspectFill"
         />
-        <view class="hero-back" @click="goBack">
+        <view class="hero-back" :style="{ top: (statusBarHeight + 10) + 'px' }" @click="goBack">
           <text class="back-icon">←</text>
         </view>
-        <view class="hero-fav" @click="onShare">
+        <view class="hero-fav" :style="{ top: (statusBarHeight + 10) + 'px' }" @click="onShare">
           <text class="fav-icon">🤍</text>
         </view>
       </view>
@@ -153,7 +153,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useRecipeStore } from '@/stores/recipe'
 import { useIngredientStore } from '@/stores/ingredient'
 import { useSeasoningStore } from '@/stores/seasoning'
@@ -167,7 +168,21 @@ const seasoningStore = useSeasoningStore()
 
 const recipe = ref<Recipe | null>(null)
 const loading = ref(true)
+const statusBarHeight = ref(0)
 const recipeImage = 'https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg'
+
+onLoad((options) => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
+  const id = options?.id
+  if (id) {
+    recipe.value = recipeStore.getRecipeDetail(id)
+  }
+  ingredientStore.load()
+  seasoningStore.load()
+  loading.value = false
+  enableShareMenu()
+})
 
 const foodIngredients = computed(() =>
   recipe.value?.ingredients.filter(i => i.type === 'ingredient') || []
@@ -235,18 +250,6 @@ function startCooking() {
   uni.showToast({ title: '开始烹饪！加油💪', icon: 'none' })
 }
 
-onMounted(() => {
-  ingredientStore.load()
-  seasoningStore.load()
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
-  const id = (currentPage as any).$page?.options?.id
-  if (id) {
-    recipe.value = recipeStore.getRecipeDetail(id)
-  }
-  loading.value = false
-  enableShareMenu()
-})
 </script>
 
 <script lang="ts">
@@ -322,7 +325,6 @@ export default {
 
 .hero-back {
   position: absolute;
-  top: 60rpx;
   left: 30rpx;
   width: 72rpx;
   height: 72rpx;
@@ -337,7 +339,6 @@ export default {
 
 .hero-fav {
   position: absolute;
-  top: 60rpx;
   right: 30rpx;
   width: 72rpx;
   height: 72rpx;

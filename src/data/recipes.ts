@@ -5,6 +5,7 @@ const recipes: Recipe[] = [
   {
     id: 'r1',
     name: '宫保鸡丁',
+    videoUrl: 'https://www.bilibili.com/video/BV1Xt411Z7z8',
     description: '经典川菜，鸡肉滑嫩花生酥脆，酸甜微辣',
     difficulty: '中等',
     cookingTime: 25,
@@ -93,6 +94,7 @@ const recipes: Recipe[] = [
   {
     id: 'r3',
     name: '回锅肉',
+    videoUrl: 'https://www.bilibili.com/video/BV1HW411c7Q2',
     description: '川菜之首，肥而不腻香气四溢',
     difficulty: '中等',
     cookingTime: 30,
@@ -133,6 +135,7 @@ const recipes: Recipe[] = [
   {
     id: 'r4',
     name: '鱼香肉丝',
+    videoUrl: 'https://www.bilibili.com/video/BV1Gs411A7Vo',
     description: '酸甜微辣，鱼香味浓，下饭神器',
     difficulty: '中等',
     cookingTime: 20,
@@ -258,6 +261,7 @@ const recipes: Recipe[] = [
   {
     id: 'r7',
     name: '麻婆豆腐',
+    videoUrl: 'https://www.bilibili.com/video/BV1Rs411V7i9',
     description: '麻辣鲜香嫩烫酥，川菜经典代表',
     difficulty: '简单',
     cookingTime: 15,
@@ -762,6 +766,7 @@ const recipes: Recipe[] = [
   {
     id: 'r20',
     name: '清蒸鲈鱼',
+    videoUrl: 'https://www.bilibili.com/video/BV1QU4y1j7T4',
     description: '粤菜经典，鱼肉鲜嫩清淡鲜美',
     difficulty: '简单',
     cookingTime: 15,
@@ -1341,6 +1346,7 @@ const recipes: Recipe[] = [
   {
     id: 'r35',
     name: '糖醋排骨',
+    videoUrl: 'https://www.bilibili.com/video/BV1Ws41157vT',
     description: '酸甜可口色泽红亮老少皆爱',
     difficulty: '中等',
     cookingTime: 40,
@@ -1715,6 +1721,7 @@ const recipes: Recipe[] = [
   {
     id: 'r45',
     name: '番茄炒蛋',
+    videoUrl: 'https://www.bilibili.com/video/BV1KE421L7Ph',
     description: '国民家常菜酸甜可口简单快手',
     difficulty: '简单',
     cookingTime: 10,
@@ -1783,6 +1790,7 @@ const recipes: Recipe[] = [
   {
     id: 'r47',
     name: '可乐鸡翅',
+    videoUrl: 'https://www.bilibili.com/video/BV1ewdhBmECU',
     description: '甜咸适口做法简单深受欢迎',
     difficulty: '简单',
     cookingTime: 30,
@@ -1854,6 +1862,7 @@ const recipes: Recipe[] = [
   {
     id: 'r49',
     name: '红烧肉',
+    videoUrl: 'https://www.bilibili.com/video/BV1Us411H7Nw',
     description: '经典硬菜，肥而不腻入口即化',
     difficulty: '中等',
     cookingTime: 90,
@@ -3035,6 +3044,7 @@ const recipes: Recipe[] = [
   {
     id: 'r83',
     name: '清蒸鲈鱼',
+    videoUrl: 'https://www.bilibili.com/video/BV1QU4y1j7T4',
     description: '鱼肉鲜嫩清淡鲜美',
     difficulty: '简单',
     cookingTime: 15,
@@ -3193,6 +3203,7 @@ const recipes: Recipe[] = [
   {
     id: 'r88',
     name: '麻婆豆腐',
+    videoUrl: 'https://www.bilibili.com/video/BV1Rs411V7i9',
     description: '麻辣鲜香国民川菜',
     difficulty: '简单',
     cookingTime: 15,
@@ -3229,6 +3240,7 @@ const recipes: Recipe[] = [
   {
     id: 'r89',
     name: '可乐鸡翅',
+    videoUrl: 'https://www.bilibili.com/video/BV1ewdhBmECU',
     description: '甜咸适口简单快手',
     difficulty: '简单',
     cookingTime: 30,
@@ -3363,6 +3375,7 @@ const recipes: Recipe[] = [
   {
     id: 'r93',
     name: '水煮肉片',
+    videoUrl: 'https://www.bilibili.com/video/BV1ys411u7Z4',
     description: '麻辣鲜香经典川菜',
     difficulty: '中等',
     cookingTime: 30,
@@ -7805,6 +7818,7 @@ const recipes: Recipe[] = [
   {
     id: 'r228',
     name: '回锅肉',
+    videoUrl: 'https://www.bilibili.com/video/BV1HW411c7Q2',
     description: '川菜之首肥而不腻配米饭绝了',
     difficulty: '中等',
     cookingTime: 25,
@@ -7839,6 +7853,7 @@ const recipes: Recipe[] = [
   {
     id: 'r229',
     name: '可乐鸡翅',
+    videoUrl: 'https://www.bilibili.com/video/BV1ewdhBmECU',
     description: '简单零失败餐桌必备',
     difficulty: '简单',
     cookingTime: 25,
@@ -7996,6 +8011,7 @@ const recipes: Recipe[] = [
   {
     id: 'r234',
     name: '番茄炒蛋',
+    videoUrl: 'https://www.bilibili.com/video/BV1KE421L7Ph',
     description: '国民家常菜酸甜可口',
     difficulty: '简单',
     cookingTime: 10,
@@ -8026,6 +8042,7 @@ const recipes: Recipe[] = [
   {
     id: 'r235',
     name: '麻婆豆腐',
+    videoUrl: 'https://www.bilibili.com/video/BV1Rs411V7i9',
     description: '川味经典麻辣鲜香嫩',
     difficulty: '简单',
     cookingTime: 15,
@@ -8277,6 +8294,7 @@ const recipes: Recipe[] = [
   {
     id: 'r243',
     name: '糖醋排骨',
+    videoUrl: 'https://www.bilibili.com/video/BV1Ws41157vT',
     description: '酸甜可口宴客必备',
     difficulty: '中等',
     cookingTime: 40,
@@ -8399,6 +8417,7 @@ const recipes: Recipe[] = [
   {
     id: 'r247',
     name: '水煮肉片',
+    videoUrl: 'https://www.bilibili.com/video/BV1ys411u7Z4',
     description: '川味经典麻辣鲜香肉片嫩滑',
     difficulty: '中等',
     cookingTime: 30,
@@ -8435,6 +8454,7 @@ const recipes: Recipe[] = [
   {
     id: 'r248',
     name: '清蒸鲈鱼',
+    videoUrl: 'https://www.bilibili.com/video/BV1QU4y1j7T4',
     description: '原汁原味鱼肉鲜美',
     difficulty: '中等',
     cookingTime: 20,
@@ -8884,6 +8904,7 @@ const recipes: Recipe[] = [
   {
     id: 'r262',
     name: '鱼香肉丝',
+    videoUrl: 'https://www.bilibili.com/video/BV1Gs411A7Vo',
     description: '川味经典酸甜微辣',
     difficulty: '中等',
     cookingTime: 20,

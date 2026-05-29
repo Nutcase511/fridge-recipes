@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <text class="page-title">健康周报</text>
+    <text class="page-title" :style="{ paddingTop: pageTitlePaddingTop }">健康周报</text>
 
     <view class="section-card">
       <text class="card-title">本周营养摄入</text>
@@ -75,14 +75,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 import { useShare } from '@/utils/share'
 
 const { enableShareMenu } = useShare()
 const ingredientStore = useIngredientStore()
 
-onMounted(() => {
+const statusBarHeight = ref(0)
+const pageTitlePaddingTop = computed(() => Math.max(statusBarHeight.value, 20) + 'px')
+
+onLoad(() => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
   ingredientStore.load()
   enableShareMenu()
 })
@@ -100,7 +106,9 @@ export default {
 .page {
   background: #F5F5F7;
   min-height: 100vh;
-  padding: 30rpx 40rpx 140rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: 140rpx;
 }
 
 .page-title {

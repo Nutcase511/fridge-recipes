@@ -12,7 +12,7 @@
           :src="getHeroImage(ingredient.name)"
           mode="aspectFill"
         />
-        <view class="hero-back" @click="goBack">
+        <view class="hero-back" :style="{ top: (statusBarHeight + 10) + 'px' }" @click="goBack">
           <text class="back-icon">←</text>
         </view>
       </view>
@@ -88,12 +88,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 import { recipeDatabase } from '@/data/recipes'
 
 const ingredientStore = useIngredientStore()
 const ingredient = ref<any>(null)
+const statusBarHeight = ref(0)
 
 const imageMap: Record<string, string> = {
   '西红柿': 'https://modao.cc/agent-py/media/generated_images/2026-05-13/bf00a2beeda44fb9827f2273e42a804d.jpg',
@@ -102,10 +104,10 @@ const imageMap: Record<string, string> = {
   '牛奶': 'https://modao.cc/agent-py/media/generated_images/2026-05-13/167a037f39c84f348edcaf76b52663e7.jpg',
 }
 
-onMounted(() => {
-  const pages = getCurrentPages()
-  const cp = pages[pages.length - 1] as any
-  const id = cp.$page?.options?.id
+onLoad((options) => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
+  const id = options?.id
   if (id) {
     const found = ingredientStore.ingredients.find(i => i.id === id)
     if (found) ingredient.value = found
@@ -233,7 +235,6 @@ function addToList() {
 
 .hero-back {
   position: absolute;
-  top: 60rpx;
   left: 30rpx;
   width: 72rpx;
   height: 72rpx;

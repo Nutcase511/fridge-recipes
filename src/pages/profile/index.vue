@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" :style="{ paddingTop: (statusBarHeight + 10) + 'px' }">
     <view class="profile-header">
       <view class="avatar-wrap" @click="chooseAvatar">
         <image
@@ -100,7 +100,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 import { useUser } from '@/utils/user'
 import { useShare } from '@/utils/share'
@@ -108,6 +109,16 @@ import { useShare } from '@/utils/share'
 const { enableShareMenu } = useShare()
 const ingredientStore = useIngredientStore()
 const userUtils = useUser()
+
+const statusBarHeight = ref(0)
+
+onLoad(() => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
+  ingredientStore.load()
+  syncData()
+  enableShareMenu()
+})
 
 const defaultAvatar = 'https://modao.cc/agent-py/media/generated_images/2026-05-13/e96cf79685f6430eb9230062d5f3bbaf.jpg'
 
@@ -160,11 +171,6 @@ function showToast(msg: string) {
   uni.showToast({ title: msg + ' 开发中', icon: 'none' })
 }
 
-onMounted(() => {
-  ingredientStore.load()
-  syncData()
-  enableShareMenu()
-})
 </script>
 
 <script lang="ts">
@@ -179,7 +185,9 @@ export default {
 .page {
   background: #F5F5F7;
   min-height: 100vh;
-  padding: 80rpx 40rpx 160rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: 160rpx;
 }
 
 .profile-header {

@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useShare } from '@/utils/share'
 
 const { enableShareMenu } = useShare()
@@ -32,10 +33,8 @@ function onError(e: any) {
   uni.showToast({ title: '视频加载失败，请重试', icon: 'none' })
 }
 
-onMounted(() => {
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
-  const url = (currentPage as any).$page?.options?.url
+onLoad((options) => {
+  const url = options?.url
   if (url) {
     videoUrl.value = convertBilibiliUrl(decodeURIComponent(url))
   }

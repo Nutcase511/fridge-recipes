@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <!-- 头部：头像 + 鲜食记 + 通知铃铛 -->
-    <view class="header">
+    <view class="header" :style="{ paddingTop: (statusBarHeight + 10) + 'px' }">
       <view class="header-left" @click="handleAvatarClick">
         <image
           class="avatar"
@@ -77,7 +77,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 import { useSeasoningStore } from '@/stores/seasoning'
 import { useUser } from '@/utils/user'
@@ -87,6 +88,16 @@ const { enableShareMenu } = useShare()
 const ingredientStore = useIngredientStore()
 const seasoningStore = useSeasoningStore()
 const userUtils = useUser()
+
+const statusBarHeight = ref(0)
+
+onLoad(() => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
+  ingredientStore.load()
+  seasoningStore.load()
+  enableShareMenu()
+})
 
 const defaultAvatar = 'https://modao.cc/agent-py/media/generated_images/2026-05-13/e96cf79685f6430eb9230062d5f3bbaf.jpg'
 
@@ -180,11 +191,6 @@ function goFoodDetail(id: string) {
   uni.navigateTo({ url: `/pages/food-detail/index?id=${id}` })
 }
 
-onMounted(() => {
-  ingredientStore.load()
-  seasoningStore.load()
-  enableShareMenu()
-})
 </script>
 
 <script lang="ts">
@@ -210,7 +216,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 100rpx 40rpx 20rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: 20rpx;
 }
 
 .header-left {

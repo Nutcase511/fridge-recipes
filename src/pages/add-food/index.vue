@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" :style="{ paddingTop: (statusBarHeight + 10) + 'px' }">
     <view class="header">
       <view class="back-btn" @click="goBack">
         <text class="back-icon">←</text>
@@ -83,9 +83,16 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 
 const ingredientStore = useIngredientStore()
+const statusBarHeight = ref(0)
+
+onLoad(() => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
+})
 
 const categories = ['肉类', '蔬菜', '水果', '蛋奶', '海鲜', '豆制品', '主食', '其他']
 
@@ -162,7 +169,9 @@ function goBack() {
 .page {
   background: white;
   min-height: 100vh;
-  padding: 100rpx 40rpx 60rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: 60rpx;
 }
 
 .header {

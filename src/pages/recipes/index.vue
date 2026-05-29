@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <view class="hero">
+    <view class="hero" :style="{ paddingTop: heroPaddingTop }">
       <text class="hero-title">今日推荐</text>
       <text class="hero-sub">
         冰箱有 <text class="hero-count">{{ ingredientStore.ingredientCount }}</text> 种食材，为您智能匹配：
@@ -75,7 +75,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad, onReady } from '@dcloudio/uni-app'
 import { useIngredientStore } from '@/stores/ingredient'
 import { useSeasoningStore } from '@/stores/seasoning'
 import { useRecipeStore } from '@/stores/recipe'
@@ -85,6 +86,9 @@ const { enableShareMenu } = useShare()
 const ingredientStore = useIngredientStore()
 const seasoningStore = useSeasoningStore()
 const recipeStore = useRecipeStore()
+
+const statusBarHeight = ref(0)
+const heroPaddingTop = computed(() => Math.max(statusBarHeight.value, 20) + 'px')
 
 const recipeImage = 'https://modao.cc/agent-py/media/generated_images/2026-05-13/50b83da29f9a440aba8c352c5dc4afcf.jpg'
 
@@ -111,11 +115,16 @@ function goAddFood() {
   uni.navigateTo({ url: '/pages/add-food/index' })
 }
 
-onMounted(() => {
+onLoad(() => {
+  const sysInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = sysInfo.statusBarHeight || 0
   ingredientStore.load()
   seasoningStore.load()
-  recipeStore.generate(10)
   enableShareMenu()
+})
+
+onReady(() => {
+  recipeStore.generate(10)
 })
 </script>
 
@@ -138,7 +147,9 @@ export default {
 }
 
 .hero {
-  padding: 30rpx 40rpx 10rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  padding-bottom: 10rpx;
 }
 
 .hero-title {
@@ -271,9 +282,12 @@ export default {
 
 .bottom-bar {
   position: fixed;
-  bottom: 140rpx;
-  left: 40rpx;
-  right: 40rpx;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 40rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: #F5F5F7;
   z-index: 100;
 }
 
