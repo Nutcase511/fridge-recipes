@@ -1,0 +1,137 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/recipes/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/health/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/ingredients/index",
+      "style": {
+        "navigationBarTitleText": "食材管理",
+        "navigationBarBackgroundColor": "#F97316",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/seasonings/index",
+      "style": {
+        "navigationBarTitleText": "调料管理",
+        "navigationBarBackgroundColor": "#F97316",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/generate/index",
+      "style": {
+        "navigationBarTitleText": "智能匹配",
+        "navigationBarBackgroundColor": "#F97316",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/recipe-detail/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/video-player/index",
+      "style": {
+        "navigationBarTitleText": "视频教程",
+        "navigationBarBackgroundColor": "#F97316",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/add-food/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    },
+    {
+      "path": "pages/food-detail/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "titleView": false
+        }
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "鲜食记",
+    "navigationBarBackgroundColor": "#F97316",
+    "backgroundColor": "#f5f5f7"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#F97316",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tab/home.png",
+        "selectedIconPath": "static/tab/home-active.png"
+      },
+      {
+        "pagePath": "pages/recipes/index",
+        "text": "菜谱",
+        "iconPath": "static/tab/recipes.png",
+        "selectedIconPath": "static/tab/recipes-active.png"
+      },
+      {
+        "pagePath": "pages/health/index",
+        "text": "健康",
+        "iconPath": "static/tab/health.png",
+        "selectedIconPath": "static/tab/health-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/tab/profile.png",
+        "selectedIconPath": "static/tab/profile-active.png"
+      }
+    ]
+  }
+}

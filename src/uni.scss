@@ -1,0 +1,114 @@
+$primary-color: #F97316;
+$primary-light: #FFEDD5;
+$primary-dark: #EA580C;
+$danger-color: #EF4444;
+$warning-color: #F59E0B;
+$success-color: #10B981;
+$bg-color: #FFF7F0;
+$card-bg: #ffffff;
+$text-primary: #1F2937;
+$text-secondary: #6B7280;
+$text-light: #9CA3AF;
+$border-color: #F3F4F6;
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8px 24px rgba(249, 115, 22, 0.15);
+$radius-sm: 8rpx;
+$radius-md: 12rpx;
+$radius-lg: 16rpx;
+$radius-xl: 24rpx;
+$radius-full: 9999rpx;
+
+page {
+  background-color: $bg-color;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+view {
+  box-sizing: border-box;
+}
+
+// 通用卡片样式
+.card {
+  background: $card-bg;
+  border-radius: $radius-lg;
+  padding: 20rpx 24rpx;
+  margin: 0 20rpx 16rpx;
+  box-shadow: $shadow-sm;
+}
+
+// 通用按钮样式
+.btn-primary {
+  background: linear-gradient(135deg, $primary-color, $primary-dark);
+  color: white;
+  border-radius: $radius-full;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  padding: 24rpx 0;
+  box-shadow: $shadow-md;
+  transition: all 0.2s;
+
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+}
+
+.btn-outline {
+  border: 2rpx solid $primary-color;
+  color: $primary-color;
+  background: white;
+  border-radius: $radius-full;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  padding: 22rpx 0;
+}
+
+// 标签样式
+.tag {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: $radius-full;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.tag-primary {
+  background: $primary-light;
+  color: $primary-dark;
+}
+
+.tag-success {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.tag-warning {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.tag-danger {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+// Section title
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 16rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .more {
+    font-size: 24rpx;
+    font-weight: 400;
+    color: $text-light;
+  }
+}
